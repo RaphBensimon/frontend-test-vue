@@ -7,6 +7,6 @@ const router = createRouter({
 	routes,
 })
 router.beforeEach((to) => {
-	document.title = i18n.global.t(to.meta.title) + ' | DEFAULT_TITLE'
+	document.title = i18n.global.t(to.meta.title) + ' | Les Commis'
 })
 export default router

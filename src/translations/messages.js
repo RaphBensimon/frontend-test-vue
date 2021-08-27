@@ -1,4 +1,4 @@
-import fr from './french/fr.js'
+import fr from './french.js'
 export default {
 	fr
 }
