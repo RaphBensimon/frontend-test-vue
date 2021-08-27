@@ -1,7 +1,8 @@
 <template>
 	<div id="recipes">
 		<Filters :filters="filters" />
-		<Recipes :recipe="recipes" />
+		<Spinner variant="primary" v-if="loading" />
+		<Recipes :recipes="recipes" v-else />
 		<Pagination :pagination="pagination" />
 	</div>
 </template>
@@ -21,6 +22,7 @@ export default {
 				currentPage : 1,
 				pageCount   : null
 			},
+			loading : false,
 			filters : [
 				{
 					label  : 'creative',
@@ -53,18 +55,27 @@ export default {
 			]
 		}
 	},
-	async created() {
+	computed : {
+		currentPage() {
+			return this.pagination.currentPage
+		},
+		filtersQuery() {
+			return this.$route.query.filters
+		}
+	},
+	async mounted() {
 		this.setPagination()
 		this.setFilter()
 		await this.getRecipes()
 	},
 	methods : {
 		getRecipes() {
+			this.loading = true
 			let filtersQuery = '?'
 			this.filters.forEach((filter, i) => {
 				if(filter.active) {
 					let ampersand  = ''
-					if(i > 0) ampersand  +='&'
+					if(i > 0) ampersand  += '&'
 					filtersQuery += `${ampersand}${filter.label}=true`
 				}
 			})
@@ -73,12 +84,14 @@ export default {
 				.then(res => {
 					this.recipes = res.data.recipes
 					this.pagination.pageCount = res.data.page_count
+					this.loading = false
 				}).catch(err => {
 					console.log(err)
+					this.loading = false
 				})
 		},
 		setPagination() {
-			const currentPage = this.$route.query.currentPage
+			const currentPage = this.$route.query.p
 			if(!currentPage) return
 			this.pagination.currentPage = currentPage
 		},
@@ -93,7 +106,28 @@ export default {
 				find.active = true
 			})
 		}
-
+	},
+	watch : {
+		filtersQuery() {
+			this.pagination.currentPage = 1
+			this.getRecipes()
+		},
 	}
 }
 </script>
+<style scoped>
+#recipes {
+	height: 100%;
+	max-width: 1200px;
+	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
+}
+/deep/.spinner {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+}
+</style>
