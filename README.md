@@ -8,7 +8,7 @@ Ce dépot fournit un squelette vide d'une application Vue.js.
 
 ### Lancer le projet
 ```bash
-$ quasar dev
+npm run serve
 ```
 
 ## But de l'exercice
