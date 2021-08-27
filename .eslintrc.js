@@ -54,6 +54,7 @@ module.exports = {
 			ignores                   : []
 		}],
 		'vue/mustache-interpolation-spacing' : ['error', 'always'],
+		'vue/max-attributes-per-line'        : 'off',
 		'no-trailing-spaces'                 : ['error'],
 		'no-multiple-empty-lines'            : ['error', {
 			max    : 1,
