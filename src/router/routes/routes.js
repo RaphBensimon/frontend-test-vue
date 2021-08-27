@@ -1,14 +1,14 @@
-import Home from '@/views/home/Home.vue'
+import Recipes from '@/views/recipes/Recipes.vue'
 const routes = [
 	{
 		path     : '/:catchAll(.*)',
-		redirect : '/'
+		redirect : '/recipes'
 	},
 	{
-		path      : '/',
-		component : Home,
+		path      : '/recipes',
+		component : Recipes,
 		meta      : {
-			title : 'home'
+			title : 'our recipes'
 		}
 	}
 ]
