@@ -6,6 +6,10 @@ Ce dépot fournit un squelette vide d'une application Vue.js.
 - Node >=12.22.1
 - NPM >=6.14.12
 
+### Installer le projet
+```bash
+npm install
+```
 ### Lancer le projet
 ```bash
 npm run serve
