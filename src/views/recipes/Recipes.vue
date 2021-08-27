@@ -4,13 +4,20 @@
 			<Filter v-for="(filter, i) in filters" :key="i" :filter="filter" />
 		</div>
 		<div class="recipes">
-			<Recipes v-for="(recipe, i) in recipes" :key="i" :recipe="recipe" />
+			<Recipe v-for="(recipe, i) in recipes" :key="i" :recipe="recipe" />
 		</div>
 		<Pagination :pagination="pagination" />
 	</div>
 </template>
 <script>
+import Pagination from '@/components/Pagination'
+import { Filter, Recipe } from './components/'
 export default {
+	components : {
+		Pagination,
+		Filter,
+		Recipe
+	},
 	data() {
 		return {
 			recipes    : [],
