@@ -55,8 +55,12 @@ module.exports = {
 		}],
 		'vue/mustache-interpolation-spacing' : ['error', 'always'],
 		'vue/max-attributes-per-line'        : 'off',
-		'no-trailing-spaces'                 : ['error'],
-		'no-multiple-empty-lines'            : ['error', {
+		'vue/html-closing-bracket-newline'   : ['error', {
+			singleline : 'never',
+			multiline  : 'never'
+		}],
+		'no-trailing-spaces'      : ['error'],
+		'no-multiple-empty-lines' : ['error', {
 			max    : 1,
 			maxEOF : 0
 		}]

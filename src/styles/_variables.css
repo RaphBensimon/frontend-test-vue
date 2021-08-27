@@ -1,3 +1,9 @@
 :root {
 	--white: #fff;
+	--grey: #727679;
+	--light-grey: #ced4da;
+	--primary: #327791;
+	--secondary: #fef3a4;
+	--border-radius: 4px;
+	--transition: 0.25s;
 }

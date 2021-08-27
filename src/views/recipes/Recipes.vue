@@ -1,22 +1,18 @@
 <template>
 	<div id="recipes">
-		<div class="filters">
-			<Filter v-for="(filter, i) in filters" :key="i" :filter="filter" />
-		</div>
-		<div class="recipes">
-			<Recipe v-for="(recipe, i) in recipes" :key="i" :recipe="recipe" />
-		</div>
+		<Filters :filters="filters" />
+		<Recipes :recipe="recipes" />
 		<Pagination :pagination="pagination" />
 	</div>
 </template>
 <script>
 import Pagination from '@/components/Pagination'
-import { Filter, Recipe } from './components/'
+import { Filters, Recipes } from './components/'
 export default {
 	components : {
 		Pagination,
-		Filter,
-		Recipe
+		Filters,
+		Recipes
 	},
 	data() {
 		return {
@@ -33,7 +29,27 @@ export default {
 				{
 					label  : 'healthy',
 					active : false
-				}
+				},
+				{
+					label  : 'gourmand',
+					active : false
+				},
+				{
+					label  : 'veggie',
+					active : false
+				},
+				{
+					label  : 'nutrition',
+					active : false
+				},
+				{
+					label  : 'efficace',
+					active : false
+				},
+				{
+					label  : 'rapide',
+					active : false
+				},
 			]
 		}
 	},

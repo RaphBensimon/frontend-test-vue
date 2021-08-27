@@ -1,6 +1,6 @@
-import Filter from './Filter'
-import Recipe from './Recipe'
+import Filters from './Filters'
+import Recipes from './Recipes'
 export {
-	Filter,
-	Recipe
+	Filters,
+	Recipes
 }
