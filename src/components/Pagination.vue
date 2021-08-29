@@ -52,13 +52,6 @@ export default {
 	},
 	methods : {
 		setCurrentPage(index) {
-			this.$router.replace({
-				path  : this.$route.path,
-				query : {
-					...this.$route.query,
-					p : index
-				}
-			})
 			this.$emit('set-current-page', index)
 			window.scroll(0, 0)
 		}

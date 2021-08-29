@@ -40,8 +40,9 @@ export default {
 				currentPage : 1,
 				pageCount   : null
 			},
-			loading : false,
-			filters : [
+			loading      : false,
+			firstLoading : true,
+			filters      : [
 				{
 					label  : 'creative',
 					active : false
@@ -107,9 +108,9 @@ export default {
 					this.recipes = this.initRecipes(res.data.recipes)
 					this.pagination.pageCount = parseInt(res.data.page_count)
 					this.checkIfAllImagesIsLoaded()
-				}).catch(err => {
-					console.log(err)
-					this.loading = false
+				}).catch(() => {
+					this.recipes = []
+					this.loading = true
 				})
 		},
 		setPagination() {
@@ -131,6 +132,13 @@ export default {
 		},
 		setCurrentPage(page) {
 			this.pagination.currentPage = page
+			this.$router.replace({
+				path  : this.$route.path,
+				query : {
+					...this.$route.query,
+					p : page
+				}
+			})
 		},
 		initRecipes(recipes) {
 			return recipes.map((rec, i) => {
@@ -167,7 +175,10 @@ export default {
 			this.loadRecipes()
 		},
 		currentPage() {
-			this.loadRecipes()
+			if(!this.firstLoading) {
+				this.loadRecipes()
+			}
+			this.firstLoading = false
 		}
 	}
 }
