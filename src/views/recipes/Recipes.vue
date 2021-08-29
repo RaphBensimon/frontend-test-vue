@@ -1,24 +1,42 @@
 <template>
 	<div id="recipes">
 		<Filters :filters="filters" />
-		<Spinner variant="primary" v-if="loading" />
-		<Recipes :recipes="recipes" v-else />
-		<Pagination :pagination="pagination" />
+		<div class="recipes-list" v-if="recipes.length && loading">
+			<RecipeSkeleton :recipe="recipe" v-for="(recipe, index) in recipes" :key="index" />
+		</div>
+		<div class="recipes-list" v-if="recipes.length && !loading">
+			<Recipe :recipe="recipe" v-for="(recipe, index) in recipes" :key="index" @click="currentRecipe = recipe" />
+		</div>
+		<p v-if="!recipes.length && loading">
+			{{ $t('no-result') }}
+		</p>
+		<Pagination :pagination="pagination" @set-current-page="setCurrentPage" v-if="recipes.length && !loading" />
+		<Modal v-if="currentRecipe" @closeModal="currentRecipe = null">
+			<template #title>
+				{{ currentRecipe.name }}
+			</template>
+			<template #content>
+				<Description :recipe="currentRecipe" />
+			</template>
+		</Modal>
 	</div>
 </template>
 <script>
 import Pagination from '@/components/Pagination'
-import { Filters, Recipes } from './components/'
+import { Filters, Recipe, RecipeSkeleton, Description } from './components/'
 export default {
 	components : {
 		Pagination,
 		Filters,
-		Recipes
+		Recipe,
+		RecipeSkeleton,
+		Description
 	},
 	data() {
 		return {
-			recipes    : [],
-			pagination : {
+			recipes       : [],
+			currentRecipe : null,
+			pagination    : {
 				currentPage : 1,
 				pageCount   : null
 			},
@@ -61,15 +79,19 @@ export default {
 		},
 		filtersQuery() {
 			return this.$route.query.filters
+		},
+		random() {
+			return Math.floor(Math.random() * 5) + 5
 		}
 	},
-	async mounted() {
+	async created() {
+		this.recipes = this.initRecipes(new Array(20).fill({}))
 		this.setPagination()
-		this.setFilter()
-		await this.getRecipes()
+		this.initFilter()
+		await this.loadRecipes()
 	},
 	methods : {
-		getRecipes() {
+		async loadRecipes() {
 			this.loading = true
 			let filtersQuery = '?'
 			this.filters.forEach((filter, i) => {
@@ -82,20 +104,20 @@ export default {
 			this.axios.get(`https://abonne.lescommis.com/api/cookbook_recipes/${this.pagination.currentPage}
 			/${filtersQuery}`)
 				.then(res => {
-					this.recipes = res.data.recipes
-					this.pagination.pageCount = res.data.page_count
-					this.loading = false
+					this.recipes = this.initRecipes(res.data.recipes)
+					this.pagination.pageCount = parseInt(res.data.page_count)
+					this.checkIfAllImagesIsLoaded()
 				}).catch(err => {
 					console.log(err)
 					this.loading = false
 				})
 		},
 		setPagination() {
-			const currentPage = this.$route.query.p
+			const currentPage = parseInt(this.$route.query.p)
 			if(!currentPage) return
 			this.pagination.currentPage = currentPage
 		},
-		setFilter() {
+		initFilter() {
 			const filters = this.$route.query.filters
 			if(!filters) return
 			const filtersArray = filters.split(',')
@@ -103,31 +125,91 @@ export default {
 				const find = this.filters.find(x => {
 					return x.label == filter
 				})
-				find.active = true
+				if(find)
+					find.active = true
+			})
+		},
+		setCurrentPage(page) {
+			this.pagination.currentPage = page
+		},
+		initRecipes(recipes) {
+			return recipes.map((rec, i) => {
+				return {
+					...rec,
+					bigger : (i % this.random == 0) && i < recipes.length - 5
+				}
+			})
+		},
+		checkIfAllImagesIsLoaded() {
+			var imgLoaded = 0
+			this.recipes.forEach(e => {
+				const img = new Image()
+				if(e.isBigger) img.src = `https://abonne.lescommis.com/${e.image}`
+				else img.src = `https://abonne.lescommis.com/${e.image_wide_thumb_url}`
+				img.onload = () => {
+					imgLoaded++
+					if(imgLoaded == this.recipes.length)
+						this.loading = false
+				}
 			})
 		}
 	},
 	watch : {
 		filtersQuery() {
 			this.pagination.currentPage = 1
-			this.getRecipes()
+			this.$router.replace({
+				path  : this.$route.path,
+				query : {
+					...this.$route.query,
+					p : 1
+				}
+			})
+			this.loadRecipes()
 		},
+		currentPage() {
+			this.loadRecipes()
+		}
 	}
 }
 </script>
 <style scoped>
 #recipes {
-	height: 100%;
+	height: fit-content;
 	max-width: 1200px;
-	position: relative;
-	left: 50%;
-	transform: translateX(-50%);
+	padding: 0 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 0 auto;
 }
-/deep/.spinner {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 
+@media screen and (max-width: 480px) {
+	#recipes {
+		padding: 0 10px;
+	}
+}
+#recipes > * {
+	margin: 10px 0;
+}
+.recipes-list {
+	display: grid;
+	grid-gap: 1rem;
+	width: 100%;
+	grid-template-rows: repeat(4, 1fr);
+	grid-template-columns: repeat(4, 1fr);
+}
+
+@media screen and (max-width: 1000px) {
+	.recipes-list {
+		grid-template-rows: auto 1fr auto;
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media screen and (max-width: 800px) {
+	.recipes-list {
+		grid-template-rows: repeat(1, 1fr);
+		grid-template-columns: repeat(2, 1fr);
+	}
 }
 </style>

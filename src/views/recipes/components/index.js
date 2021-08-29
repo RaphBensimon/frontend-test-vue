@@ -1,6 +1,10 @@
 import Filters from './Filters'
-import Recipes from './Recipes'
+import Recipe from './Recipe'
+import RecipeSkeleton from './RecipeSkeleton'
+import Description from './Description'
 export {
 	Filters,
-	Recipes
+	Recipe,
+	RecipeSkeleton,
+	Description
 }

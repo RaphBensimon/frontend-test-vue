@@ -49,21 +49,23 @@ export default {
 	display: flex;
 	font-weight: bold;
 	justify-content: center;
-
+	flex-wrap: wrap;
 }
 .filter {
 	padding: 10px 20px;
-	margin: 0 10px;
-	border: 1px solid var(--primary);
+	margin: 5px 10px;
+	border: 2px solid var(--primary);
 	border-radius: var(--border-radius);
 	cursor: pointer;
+	color: var(--primary);
 	width: 100px;
 	text-align: center;
 	text-transform: capitalize;
+	transition: calc(var(--transition) / 2);
 }
 .filter:hover {
-	transition: calc(var(--transition) / 2);
 	background-color: var(--primary-light);
+	border-color: var(--primary-light);
 	color: var(--white);
 }
 .filter.active {
