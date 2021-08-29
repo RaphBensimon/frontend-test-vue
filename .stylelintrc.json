@@ -9,6 +9,9 @@
 		"max-nesting-depth": [0, {"ignore": ["pseudo-classes"]}],
 		"selector-max-id": 2,
 		"selector-pseudo-element-colon-notation": "single",
-		"string-quotes": "single"
+		"string-quotes": "single",
+		"selector-pseudo-class-no-unknown": [true, {
+			"ignorePseudoClasses": ["/^deep/"]
+		}]
 	}
 }
